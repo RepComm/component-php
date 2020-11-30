@@ -8,29 +8,49 @@ Example usage
 //include the lib
 include_once("component.php");
 
-//Create a new componet
-$mydiv = new Component();
+function test_component_php () {
+  //Create a container for our content
+  $content = new Component();
 
-$mydiv->
-make("div")->                               //make it a <DIV>
-textContent ("Hello World Div")->           //set the text
-styleItem   ("background-color", "white")-> //style
-styleItem   ("color"           , "black");  //style
+  $content->make("div")->
+  textContent("Hello World")->
 
-//Make a line break
-$br = new Component();
-$br->
-make("br")->
-mount($mydiv);
+  //Styling
+  styleItem("position", "absolute")->
+  styleItem("top", "25%")->
+  styleItem("left", "25%")->
+  styleItem("width", "50vw")->
+  styleItem("height", "50vh")->
+  styleItem("background-color", "black")->
+  styleItem("color", "white");
 
-//Create a new component
-$myspan = new Component();
+  //Iterate from 0 to 9
 
-$myspan->
-make("span")->           //make it a <SPAN>
-textContent("My span")-> //set the text
-mount($mydiv);           //attach to div parent
+  //Declaring variable outside of the loop should save us some performance
+  $child = 0;
 
-//output to the page
-echo $mydiv->buildFullTag();
+  for ($i=0; $i < 10; $i++) {
+    //Create a line break
+    $child = new Component();
+    $child->make("br")->
+
+    //attach to the content as a child
+    mount($content);
+
+    //Create text span
+    $child = new Component();
+    $child->make("span")->
+
+    //set the text content to "span " + iteration number
+    textContent("span " . sprintf("%d", $i) )->
+
+    //attach to the content as a child
+    mount($content);
+  }
+
+  //walk the hierarchy and echo the HTML generated
+  writeComponent($content);
+}
+
+test_component_php();
 ```
